@@ -1,1 +1,15 @@
-## Chapter 1
+## Zend Opcache and Atomic Deploys
+
+If you haven't upgraded to 5.5 yet, the APC extension that everyone uses has been deprecated and you HAVE to use the (now open-source) Zend Opcache. Bummer, I know. No one likes change.
+
+Opcache is pretty good, it's faster, but it has some TOTALLY different behaviors that can really screw the pooch when you deploy code.
+
+So here's the problem— if you're like me, you use something like capistrano or chef to deploy your code. Both of these tools use the same pattern, they copy your code into a "releases" folder, do all of your pre-deployment stuff, and symlink a "current" folder that nginx points at to the newest release. It's a pretty common pattern that lets you do atomic deploys without dropping any requests.
+
+This worked with APC, because APC resolves the inodes of the files as the cache keys, so when the symlink gets updated after a deploy, APC begins to cache to new files.
+
+Zend Opcache totally destroys this pattern. Unlike APC, it uses the actual path (the shared symlink in our case) of the files as the cache key instead of inodes, so if you're deploying with chef or capistrano, you're not actually getting atomic deploys anymore. Zend Opcache will re-cache your PHP files on different intervals (aka whenever it feels like it) depending on what settings you're using, which can mean half of your newly deployed code gets mixed with some of the code from your last deploy. No freakin' bueno.
+
+Etsy has a pretty good blog post about this very topic and how they solved it with Apache. Well, I don't use Apache, and I needed to figure out how to solve it with Nginx.
+
+What I ended up doing was simple. Instead of pointing the nginx root to "current" symlink (i.e, /u/apps/my_app/current), I have my chef recipe update the root path in nginx to the actual path of the latest release and gracefully restart nginx with kill -HUP after a deploy. It's a little bit more work, but it gives me back truly atomic deploys.
