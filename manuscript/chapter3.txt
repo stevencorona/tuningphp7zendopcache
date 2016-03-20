@@ -1,0 +1,37 @@
+## Introducing PHP 5.5 Zend Opcache-JSON
+
+In my last post, I shared an in-depth jump into the caverns of PHP 5.5 Zend Opcache. This week I have a present for you.. but first:
+
+Did you get around to upgrading to PHP 5.5 yet?
+
+Go do it now ;) I'll wait…
+
+ANYWAYS, In my last post, I tried to answer this burning question—
+
+"I really want to use Zend Optimizer but I have NO IDEA what settings to use."
+
+We answered that question.. A bunch of readers told me it was the BEST newsletter they've gotten in awhile.
+
+But, Houston, WE STILL HAVE A PROBLEM! (And it's not that we're out of ice cream)
+
+We're armed with enough information to make reasonable assumptions on what to set all of the config values to in Opcache, but.. we still don't know how it's behaving in production.
+
+What if other parts of your stack behaved this way? If you couldn't get access_logs from nginx and just had to assume people were visiting your site. That'd be totally unacceptable, right?
+
+I hate making decisions and assumptions based on guesses. When it comes to my infrastructure, I need cold, hard, monitorable facts.
+
+So here's my totally free, open-source gift for YOU
+
+The PHP community needs a way to uncover the magic going on inside of Zend Opcache. When your paycheck depends on the success and uptime of your app, the last thing you want is a surprise.
+
+I present to you, a tiny but useful open-source library to pry this data out of the bowels of PHP and make it easy to digest— opcache-json
+
+https://github.com/stevencorona/opcache-json
+
+The idea is simple, you add just a few lines of code and you can expose your Opcache internals as a blob of JSON, easy to view and monitor (you'll probably want to make it internal-only or protect it from the public somehow).
+
+On top of that, you can optionally enable a Statsd sink, so that you can capture historical and long-term data from Opcache in SANE way.
+
+https://github.com/stevencorona/opcache-json
+
+I hope you find the library useful. Honestly. Whether you've purchased Scaling PHP or not, more than anything, I want to create things that are useful and valuable for the PHP community.
